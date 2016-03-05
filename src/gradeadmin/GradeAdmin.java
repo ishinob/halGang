@@ -8,6 +8,7 @@ package gradeadmin;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.util.Enumeration;
 import java.util.logging.Level;
@@ -41,11 +42,11 @@ public class GradeAdmin extends JFrame {
     private final static String[] SUBJECTS_NAMES = {
         "全体", "英語", "数学", "国語", "社会", "理科"
     };
-    
+
     private final static String[] ACTIVE_ITEMS = {
         "CSV取込", "CSV出力", "ヒストグラム"
     };
-    
+
     private final static String[] COLUMNS_NAMES = {
         "番号", "氏名",
         "英語", "数学", "国語", "社会", "理科",
@@ -53,7 +54,7 @@ public class GradeAdmin extends JFrame {
     };
 
     private String[][] TABLEDATA = {
-        {"0001", "石水", "75", "60", "55", "80", "75", "", ""},
+        {"0001", "山本", "75", "60", "55", "80", "75", "", ""},
         {"0002", "山田", "70", "95", "85", "55", "70", "", ""},
         {"0003", "鈴木", "65", "90", "65", "65", "45", "", ""},
         {"0004", "佐藤", "90", "40", "40", "90", "25", "", ""},
@@ -72,33 +73,31 @@ public class GradeAdmin extends JFrame {
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
         setTitle(TITLE);
     }
-    
+
     private void initComponents() {
 
         JPanel nPanel = new JPanel();
-        nPanel.setLayout(new BoxLayout(nPanel, BoxLayout.X_AXIS));
+        nPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         JComboBox hCbx = new JComboBox(SUBJECTS_NAMES);
-        //hCbx.setPreferredSize(new Dimension(64, 20));
+        hCbx.setPreferredSize(new Dimension(64, 20));
         JComboBox oCbx = new JComboBox(ACTIVE_ITEMS);
-        //oCbx.setPreferredSize(new Dimension(88, 20));
         JButton aBtn = new JButton("実行");
-        
+
         nPanel.add(hCbx);
         nPanel.add(oCbx);
         nPanel.add(aBtn);
-    
+
         JTable cTbl = new JTable(TABLEDATA, COLUMNS_NAMES);
-        cTbl.setPreferredSize(cTbl.getPreferredSize());
+        
         JScrollPane sp = new JScrollPane(cTbl);
-        //sp.setPreferredSize(new Dimension(400, 90));
-        sp.setPreferredSize(sp.getPreferredSize());
+        sp.setPreferredSize(new Dimension(440, 104));
         JPanel cPanel = new JPanel();
-        cPanel.setPreferredSize(cPanel.getPreferredSize());
+        //cPanel.setPreferredSize(cPanel.getPreferredSize());
         cPanel.add(sp);
 
         add(nPanel, BorderLayout.NORTH);
         add(cPanel, BorderLayout.CENTER);
-        
+
     }
 
     /**
