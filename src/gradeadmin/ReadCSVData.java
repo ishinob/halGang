@@ -34,20 +34,29 @@ public class ReadCSVData {
         try {
             BufferedReader br = new BufferedReader(new FileReader(csvFile));
             String line;
+            String str;
             while ((line = br.readLine()) != null) {
                 StringTokenizer st = new StringTokenizer(line, ",");
                 
-                String[] data = new String[7];
                 ScoreData sd = new ScoreData();
+                List<String> data = new ArrayList<>();
                 int i = 0;
                 while (st.hasMoreTokens()) {
                     // 1行の各要素をタブ区切りで表示
-                    sd.setID(line);
-                    data[i] = st.nextToken();
-                    i++;
+                    str = st.nextToken();
+                    switch(i){
+                        case 0:
+                            sd.setID(str);
+                            break;
+                        case 1:
+                            sd.setName(str);
+                            break;
+                        default:
+                            data.add(str);
+                    }
                 }
-
-               
+                sd.setScore(data);
+                csvData.add(sd);
             }
             br.close();
         } catch (FileNotFoundException ex) {
