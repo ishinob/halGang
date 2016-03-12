@@ -10,6 +10,8 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,6 +19,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -31,14 +34,18 @@ import javax.swing.plaf.FontUIResource;
  *
  *
  */
-public class GradeAdmin extends JFrame {
+public class GradeAdmin extends JFrame implements ActionListener{
 
     private final static String FONT_NAME = "ＭＳ ゴシック";
     private final static int FONT_SIZE = 12;
     private final static int MIN_WIDTH = 480;
-    private final static int MIN_HEIGHT = 200;
+    private final static int MIN_HEIGHT = 212;
     private final static String TITLE = "成績管理";
 
+    private JButton beginBtn;
+    private JButton clearBtn;
+    private JLabel statusBar;
+    
     private final static String[] SUBJECTS_NAMES = {
         "全体", "英語", "数学", "国語", "社会", "理科"
     };
@@ -77,15 +84,17 @@ public class GradeAdmin extends JFrame {
     private void initComponents() {
 
         JPanel nPanel = new JPanel();
-        nPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        nPanel.setLayout(new BoxLayout(nPanel, BoxLayout.X_AXIS));
         JComboBox hCbx = new JComboBox(SUBJECTS_NAMES);
         hCbx.setPreferredSize(new Dimension(64, 20));
         JComboBox oCbx = new JComboBox(ACTIVE_ITEMS);
-        JButton aBtn = new JButton("実行");
+        beginBtn = new JButton("開始");
+        clearBtn = new JButton("クリア");
 
         nPanel.add(hCbx);
         nPanel.add(oCbx);
-        nPanel.add(aBtn);
+        nPanel.add(beginBtn);
+        nPanel.add(clearBtn);
 
         JTable cTbl = new JTable(TABLEDATA, COLUMNS_NAMES);
         
@@ -94,11 +103,40 @@ public class GradeAdmin extends JFrame {
         JPanel cPanel = new JPanel();
         //cPanel.setPreferredSize(cPanel.getPreferredSize());
         cPanel.add(sp);
+        
+        
+        statusBar = new JLabel("Ready.");
+        JPanel sPanel = new JPanel();
+        sPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        sPanel.add(statusBar);
 
         add(nPanel, BorderLayout.NORTH);
         add(cPanel, BorderLayout.CENTER);
-
+        add(sPanel, BorderLayout.SOUTH);
+        
+        beginBtn.addActionListener(this);
+        clearBtn.addActionListener(this);
     }
+    
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // クリアボタン
+        if (e.getSource() == clearBtn) {
+            statusBar.setText("clear");
+        }
+        
+        // 開始ボタン
+        if(e.getSource() == beginBtn){
+            statusBar.setText("begin");
+        }
+    }
+    
+    
+    
+    
+    
+    
 
     /**
      * @param args the command line arguments
