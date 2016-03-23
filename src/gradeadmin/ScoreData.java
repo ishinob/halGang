@@ -7,7 +7,6 @@ package gradeadmin;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  *
@@ -16,7 +15,11 @@ import java.util.List;
 public class ScoreData implements Serializable{
     private String ID;
     private String Name;
-    private List<String> Score;
+    private String[] score;
+
+    public ScoreData() {
+        score = new String[5];
+    }
     
     public String getID() {
         return ID;
@@ -34,20 +37,18 @@ public class ScoreData implements Serializable{
         this.Name = Name;
     }
 
-    public List<String> getScore() {
-        return Score;
+    public String[] getScore() {
+        return score;
     }
 
-    public void setScore(List<String> Score) {
-        this.Score = Score;
+    public void setScore(String[] score) {
+        this.score = score;
     }
 
     @Override
     public String toString() {
-        return "ScoreData{" + "ID=" + ID + ", Name=" + Name + ", Score=" + Score + '}';
+        return "ScoreData{" + "ID=" + ID + ", Name=" + Name + ", score=" 
+                + Arrays.toString(score) + '}';
     }
-
-    
-    
     
 }

@@ -12,12 +12,15 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -25,7 +28,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -34,39 +40,30 @@ import javax.swing.plaf.FontUIResource;
  *
  *
  */
-public class GradeAdmin extends JFrame implements ActionListener{
+public class GradeAdmin extends JFrame implements ActionListener {
 
     private final static String FONT_NAME = "ＭＳ ゴシック";
     private final static int FONT_SIZE = 12;
-    private final static int MIN_WIDTH = 480;
-    private final static int MIN_HEIGHT = 212;
+    private final static int MIN_WIDTH = 640;
+    private final static int MIN_HEIGHT = 400;
     private final static String TITLE = "成績管理";
 
     private JButton beginBtn;
     private JButton clearBtn;
     private JLabel statusBar;
-    
-    private final static String[] SUBJECTS_NAMES = {
-        "全体", "英語", "数学", "国語", "社会", "理科"
-    };
+    private JComboBox oCbx;
+    private JTable cTbl;
+    private DefaultTableModel tableModel;
+    private ReadCSVData rcd;
+    private List<ScoreData> csvData;
 
     private final static String[] ACTIVE_ITEMS = {
         "CSV取込", "CSV出力", "ヒストグラム"
     };
 
     private final static String[] COLUMNS_NAMES = {
-        "番号", "氏名",
-        "英語", "数学", "国語", "社会", "理科",
-        "平均", "合計"
-    };
-
-    private String[][] TABLEDATA = {
-        {"0001", "山本", "75", "60", "55", "80", "75", "", ""},
-        {"0002", "山田", "70", "95", "85", "55", "70", "", ""},
-        {"0003", "鈴木", "65", "90", "65", "65", "45", "", ""},
-        {"0004", "佐藤", "90", "40", "40", "90", "25", "", ""},
-        {"0005", "田中", "55", "65", "85", "30", "35", "", ""}
-    };
+        "番号", "氏名", "平均", "合計",
+        "英語", "数学", "国語", "社会", "理科",};
 
     public GradeAdmin() {
         setInit();
@@ -79,64 +76,129 @@ public class GradeAdmin extends JFrame implements ActionListener{
         setLayout(new BorderLayout());
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
         setTitle(TITLE);
+
     }
 
     private void initComponents() {
 
         JPanel nPanel = new JPanel();
         nPanel.setLayout(new BoxLayout(nPanel, BoxLayout.X_AXIS));
-        JComboBox hCbx = new JComboBox(SUBJECTS_NAMES);
-        hCbx.setPreferredSize(new Dimension(64, 20));
-        JComboBox oCbx = new JComboBox(ACTIVE_ITEMS);
+
+        oCbx = new JComboBox(ACTIVE_ITEMS);
         beginBtn = new JButton("開始");
         clearBtn = new JButton("クリア");
 
-        nPanel.add(hCbx);
         nPanel.add(oCbx);
         nPanel.add(beginBtn);
         nPanel.add(clearBtn);
 
-        JTable cTbl = new JTable(TABLEDATA, COLUMNS_NAMES);
-        
-        JScrollPane sp = new JScrollPane(cTbl);
-        sp.setPreferredSize(new Dimension(440, 104));
-        JPanel cPanel = new JPanel();
-        //cPanel.setPreferredSize(cPanel.getPreferredSize());
-        cPanel.add(sp);
-        
-        
+        tableModel = new DefaultTableModel(COLUMNS_NAMES, 0);
+        cTbl = new JTable(tableModel);
+        JScrollPane sp = new JScrollPane();
+        sp.setViewportView(cTbl);
+
         statusBar = new JLabel("Ready.");
         JPanel sPanel = new JPanel();
         sPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         sPanel.add(statusBar);
 
         add(nPanel, BorderLayout.NORTH);
-        add(cPanel, BorderLayout.CENTER);
+        add(sp, BorderLayout.CENTER);
         add(sPanel, BorderLayout.SOUTH);
-        
+
         beginBtn.addActionListener(this);
         clearBtn.addActionListener(this);
     }
-    
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         // クリアボタン
         if (e.getSource() == clearBtn) {
-            statusBar.setText("clear");
+            statusBar.setText("クリア");
+
         }
-        
+
         // 開始ボタン
-        if(e.getSource() == beginBtn){
-            statusBar.setText("begin");
+        if (e.getSource() == beginBtn) {
+
+            int index = oCbx.getSelectedIndex();
+            switch (index) {
+                case 0:
+                    // CSV取り込み
+                    statusBar.setText(ACTIVE_ITEMS[0]);
+                    csvfileInput();
+                    break;
+                case 1:
+                    // CSV出力
+                    statusBar.setText(ACTIVE_ITEMS[1]);
+                    csvfileOutput();
+                    break;
+                default:
+                    // ヒストグラム
+                    statusBar.setText(ACTIVE_ITEMS[2]);
+                    drawHistogram();
+            }
+
         }
     }
     
+    private void drawHistogram(){
+        // ヒストグラムを作成、表示
+    }
     
-    
-    
-    
-    
+    private void csvfileOutput(){
+        // ＣＳＶファイルを出力
+    }
+
+    private void csvfileInput() {
+        // ＣＳＶファイル取り込み
+        
+        JFileChooser filechooser = new JFileChooser();
+        FileFilter filter = new FileNameExtensionFilter("CSVファイル", "csv", "CSV");
+        filechooser.setFileFilter(filter);
+        
+        int selected = filechooser.showOpenDialog(this);
+        switch (selected) {
+            case JFileChooser.APPROVE_OPTION:
+                File file = filechooser.getSelectedFile();
+                System.out.println(file.getName());
+                readCSVData(file);
+                break;
+            case JFileChooser.CANCEL_OPTION:
+                System.out.println("キャンセルされました");
+                break;
+            case JFileChooser.ERROR_OPTION:
+                System.out.println("エラー又は取消しがありました");
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    private void readCSVData(File file) {
+        rcd = new ReadCSVData();
+        csvData = rcd.readScoreData(file);
+
+        String[] data = new String[9];
+        String datas[] = new String[5];
+        for (int i = 0; i < csvData.size(); i++) {
+            ScoreData sd = csvData.get(i);
+
+            System.out.println("no = " + sd.getID());
+            System.out.println("name = " + sd.getName());
+            data[0] = sd.getID();
+            data[1] = sd.getName();
+
+            datas = sd.getScore();
+            for (int j = 0; j < 5; j++) {
+                System.out.println("kamoku" + j + " = " + data[j]);
+                data[j + 4] = datas[j];
+            }
+            tableModel.addRow(data);
+
+        }
+    }
 
     /**
      * @param args the command line arguments

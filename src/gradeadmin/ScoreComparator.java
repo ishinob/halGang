@@ -1,7 +1,6 @@
 package gradeadmin;
 
 import java.util.Comparator;
-import java.util.List;
 
 /**
  *
@@ -9,7 +8,7 @@ import java.util.List;
  */
 public class ScoreComparator implements Comparator<ScoreData> {
 
-    private int order = 1;  // 1:昇順  -1:降順
+    private final int order = -1;  // 1:昇順  -1:降順
 
     @Override
     public int compare(ScoreData o1, ScoreData o2) {
@@ -21,13 +20,13 @@ public class ScoreComparator implements Comparator<ScoreData> {
     }
 
     private Integer getScores(ScoreData sd) {
-        List<String> sc = sd.getScore();
+        String[] sc = sd.getScore();
 
         int sco = 0;
-        for (int i = 0; i < sc.size(); i++) {
-            if(sc.get(i).equals("-")){
-            }else{
-                sco = sco + Integer.parseInt(sc.get(i));
+        for (String sc1 : sc) {
+            if (sc1.equals("-")) {
+            } else {
+                sco = sco + Integer.parseInt(sc1);
             }
         }
         return (Integer)sco;

@@ -21,49 +21,57 @@ import java.util.logging.Logger;
  * @author ishin
  */
 public class ReadCSVData {
-    private final File csvFile;
+
     private List<ScoreData> csvData;
-    
-    public ReadCSVData(File csvFile){
-        this.csvFile = csvFile;
-    }
-    
-    public List<ScoreData> readScoreData(){
-        csvData = new ArrayList<>();
+
+    public ReadCSVData() {
         
+    }
+
+    public List<ScoreData> readScoreData(File csvFile) {
+        csvData = new ArrayList<>();
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(csvFile));
             String line;
             String str;
             while ((line = br.readLine()) != null) {
                 StringTokenizer st = new StringTokenizer(line, ",");
-                
+
                 ScoreData sd = new ScoreData();
-                List<String> data = new ArrayList<>();
-                int i = 0;
+                String[] data = new String[5];
+                int i = 1;
+                int n = 0;
                 while (st.hasMoreTokens()) {
                     // 1行の各要素をタブ区切りで表示
                     str = st.nextToken();
-                    switch(i){
+
+                    n = i % 7;
+                    switch (n) {
                         case 0:
-                            sd.setID(str);
+                            data[4] = str;
+                            sd.setScore(data);
+                            csvData.add(sd);
                             break;
                         case 1:
+                            sd.setID(str);
+                            break;
+                        case 2:
                             sd.setName(str);
                             break;
                         default:
-                            data.add(str);
+                            data[i - 3] = str;
                     }
+                    i++;
                 }
-                sd.setScore(data);
-                csvData.add(sd);
+                
             }
             br.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ReadCSVData.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(ReadCSVData.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
         return csvData;
     }
 }
